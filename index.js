@@ -9,12 +9,28 @@ app.set('port', process.env.PORT || 3001);
 app.locals.title = 'Twitter Hackery';
 let manualRides = []
 // at localhost:3001/, you should see the text in this response
+
+app.get('/send-tweet', async (request, response) => {
+  var message = request.param('message');
+  var handle = request.param('handle');
+  try {
+    var tweet = await sendTweet(message, handle);
+    return response.json(tweet);
+  } catch (err) {
+    console.log(err);
+  }
+});
+app.listen(app.get('port'), () => {
+  console.log(`${app.locals.title} is running on http://localhost:${app.get('port')}.`);
+});
+
 app.get('/', (request, response) => {
   response.send('Tweeter Hackery');
 });
-function sendTweet() {
+function sendTweet(message, handle) {
+  var url = `https://twitter.com/intent/tweet?text=${message}&via=${handle}`;
   return nightmare
-    .goto('https://twitter.com/intent/tweet?text=Hello&via=smj268')
+    .goto(url)
     .wait(500)
     .type('input[type="text"]', 'oversiteoversite@gmail.com')
     .type('input[type="password"]', 'oversite123')
@@ -26,14 +42,3 @@ function sendTweet() {
       tweetBtn.click()
     })
 }
-app.get('/send-tweet', async (request, response) => {
-  try {
-    var tweet = await sendTweet();
-    return response.json(tweet);
-  } catch (err) {
-    console.log(err);
-  }
-});
-app.listen(app.get('port'), () => {
-  console.log(`${app.locals.title} is running on http://localhost:${app.get('port')}.`);
-});
