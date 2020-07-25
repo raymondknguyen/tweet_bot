@@ -1,5 +1,10 @@
 const express = require('express');
 const app = express();
+
+const dotenv = require('dotenv')
+
+dotenv.config()
+
 const Nightmare = require('nightmare');
 let nightmare = Nightmare({ show: true });
 //run npm start or nodemon (if you have nodemon installed globally)
@@ -8,6 +13,7 @@ let nightmare = Nightmare({ show: true });
 app.set('port', process.env.PORT || 3001);
 app.locals.title = 'Twitter Hackery';
 // at localhost:3001/, you should see the text in this response
+
 
 app.get('/send-tweet', async (request, response) => {
   var message = request.param('message');
@@ -21,6 +27,7 @@ app.get('/send-tweet', async (request, response) => {
 });
 
 app.listen(app.get('port'), () => {
+
   console.log(`${app.locals.title} is running on http://localhost:${app.get('port')}.`);
 });
 
